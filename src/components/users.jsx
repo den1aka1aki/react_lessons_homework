@@ -9,26 +9,19 @@ const Users = ({ users, onDelete, onBookmark }) => {
           <table className="table">
             <thead>
               <tr className="">
-                <th className="" scope="col">
-                  Имя
-                </th>
-                <th className="" scope="col">
-                  Качества
-                </th>
-                <th className="" scope="col">
-                  Профессия
-                </th>
-                <th className="" scope="col">
-                  Встретился, раз
-                </th>
-                <th className="" scope="col">
-                  Оценка
-                </th>
+                <th className="" scope="col">Имя</th>
+                <th className="" scope="col">Качества</th>
+                <th className="" scope="col">Профессия</th>
+                <th className="" scope="col">Встретился, раз</th>
+                <th className="" scope="col">Оценка</th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              <User users={users} onDelete={onDelete} onBookmark={onBookmark} />
+              <User users={users}
+                    onDelete={onDelete}
+                    onBookmark={onBookmark} />
             </tbody>
           </table>
         </div>

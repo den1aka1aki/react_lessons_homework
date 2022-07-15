@@ -25,8 +25,7 @@ const User = ({ users, onDelete, onBookmark }) => {
         <button
           type="button"
           className="btn btn-danger"
-          onClick={() => onDelete(user)}
-        >
+          onClick={() => onDelete(user)}>
           delete
         </button>
       </td>

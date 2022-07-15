@@ -26,7 +26,7 @@ const App = () => {
     setUsers((prevState) => prevState.filter((users) => users !== id));
   };
   return (
-    <div>
+    <>
       <SearchStatus lenght={users.length} />
       <Users
         users={users}
@@ -34,7 +34,7 @@ const App = () => {
         onDelete={handleDelete}
 
       />
-    </div>
+    </>
   );
 };
 
