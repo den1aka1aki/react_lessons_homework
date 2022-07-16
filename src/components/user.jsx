@@ -2,8 +2,8 @@ import React from "react";
 import Qualities from "./qualities";
 import Bookmarks from "./bookmarks";
 
-const User = ({ users, onDelete, onBookmark }) => {
-  return users.map((user) => (
+const User = ({ user, onDelete, onBookmark }) => {
+  return (
     <tr key={user._id}>
       <td className="fs-5 ">{user.name}</td>
       <td className="">
@@ -30,7 +30,7 @@ const User = ({ users, onDelete, onBookmark }) => {
         </button>
       </td>
     </tr>
-  ));
+  );
 };
 
 export default User;

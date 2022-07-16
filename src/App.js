@@ -5,6 +5,7 @@ import SearchStatus from "./components/searchStatus";
 import api from "./api";
 import Users from "./components/users";
 
+
 const App = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
   const handleBookmark = (userBookmark) => {
@@ -28,12 +29,26 @@ const App = () => {
   return (
     <>
       <SearchStatus lenght={users.length} />
-      <Users
-        users={users}
-        onBookmark={handleBookmark}
-        onDelete={handleDelete}
-
-      />
+      {users.length > 0 ? (
+        <div>
+          <table className="table">
+            <thead>
+              <tr className="">
+                <th className="" scope="col">Имя</th>
+                <th className="" scope="col">Качества</th>
+                <th className="" scope="col">Профессия</th>
+                <th className="" scope="col">Встретился, раз</th>
+                <th className="" scope="col">Оценка</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <Users users={users} onDelete={handleDelete} onBookmark={handleBookmark} />
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </>
   );
 };
