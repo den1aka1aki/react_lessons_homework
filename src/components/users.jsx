@@ -1,9 +1,26 @@
-import React from "react";
-import api from "../api"
+import React from 'react';
+import User from './user';
+import PropTypes from 'prop-types';
 
-const Users = () => {
-    console.log(api.users.fetchAll())
-    return <h1>Users</h1>
-}
+const Users = ({ users, onDelete, onBookmark }) => {
+    return (
+        <>
+            {users.map((user) => (
+                <User
+                    key={user._id}
+                    user={user}
+                    onDelete={onDelete}
+                    onBookmark={onBookmark}
+                />
+            ))}
+        </>
+    );
+};
 
-export default Users
+Users.propTypes = {
+    users: PropTypes.array.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onBookmark: PropTypes.func.isRequired
+};
+
+export default Users;
