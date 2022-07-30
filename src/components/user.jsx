@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const User = ({ user, onDelete, onBookmark }) => {
     return (
-        <tr key={user._id}>
+        <tr>
             <td className='fs-5 '>{user.name}</td>
             <td className=''>
                 <Qualities qualities={user.qualities} />
@@ -34,7 +34,7 @@ const User = ({ user, onDelete, onBookmark }) => {
 };
 
 User.propTypes = {
-    user: PropTypes.array.isRequired,
+    user: PropTypes.object.isRequired,
     onDelete: PropTypes.func.isRequired,
     onBookmark: PropTypes.func.isRequired
 };
