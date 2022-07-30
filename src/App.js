@@ -13,6 +13,7 @@ const App = () => {
     const [selectedProf, setSelectedProf] = useState();
     const pageSize = 4;
     const [currentPage, setCurrentPage] = useState(1);
+
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
@@ -63,9 +64,8 @@ const App = () => {
         setUsers((prevState) => prevState.filter((users) => users !== id));
     };
     return (
-
-        <div className='d-flex'>
-            {professions && (
+        professions && (
+            <div className='d-flex'>
                 <div className='d-flex flex-column flex-shrink-0 p-3'>
                     <GroupList
                         selectedItem={selectedProf}
@@ -78,42 +78,41 @@ const App = () => {
                         Очистить
                     </button>
                 </div>
-            )}
-            {users && (
-                <div className='d-flex flex-column'>
-                    <SearchStatus length={count} />
-                    <table className='table'>
-                        <thead>
-                            <tr className=''>
-                                <th className='' scope='col'> Имя </th>
-                                <th className='' scope='col'> Качества </th>
-                                <th className='' scope='col'> Профессия </th>
-                                <th className='' scope='col'> Встретился, раз </th>
-                                <th className='' scope='col'> Оценка </th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <Users
-                                users={userCrop}
-                                onDelete={handleDelete}
-                                onBookmark={handleBookmark}
+                {users && (
+                    <div className='d-flex flex-column'>
+                        <SearchStatus length={count} />
+                        <table className='table'>
+                            <thead>
+                                <tr className=''>
+                                    <th className='' scope='col'> Имя </th>
+                                    <th className='' scope='col'> Качества </th>
+                                    <th className='' scope='col'> Профессия </th>
+                                    <th className='' scope='col'> Встретился, раз </th>
+                                    <th className='' scope='col'> Оценка </th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <Users
+                                    users={userCrop}
+                                    onDelete={handleDelete}
+                                    onBookmark={handleBookmark}
+                                />
+                            </tbody>
+                        </table>
+                        <div className='d-flex justify-content-center'>
+                            <Pagination
+                                itemsCount={count}
+                                pageSize={pageSize}
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
                             />
-                        </tbody>
-                    </table>
-                    <div className='d-flex justify-content-center'>
-                        <Pagination
-                            itemsCount={count}
-                            pageSize={pageSize}
-                            currentPage={currentPage}
-                            onPageChange={handlePageChange}
-                        />
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
-
+                )}
+            </div>
+        )
     );
 };
 

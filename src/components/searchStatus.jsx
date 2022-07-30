@@ -29,11 +29,13 @@ const SearchStatus = ({ length }) => {
         );
     }
     return (
+
         <h2>
             <span className="badge m-2 bg-primary p-2 ">
                 {length} человек тусанет с тобой сегодня
             </span>
         </h2>
+
     );
 };
 
