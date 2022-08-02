@@ -1,14 +1,16 @@
 import React from 'react';
-import Qualities from './qualities';
+import Quality from './quality';
 import Bookmarks from './bookmarks';
 import PropTypes from 'prop-types';
 
-const User = ({ user, onDelete, onBookmark }) => {
+const User = ({ user, onDelete, onBookmark, qualities }) => {
     return (
         <tr>
             <td className='fs-5 '>{user.name}</td>
-            <td className=''>
-                <Qualities qualities={user.qualities} />
+            <td>
+                {qualities.map((qual) => (
+                    <Quality {...qual} key={qual._id} />
+                ))}
             </td>
             <td className=''>{user.profession.name}</td>
             <td className=''>{user.completedMeetings}</td>
@@ -35,7 +37,8 @@ const User = ({ user, onDelete, onBookmark }) => {
 
 User.propTypes = {
     user: PropTypes.object.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onBookmark: PropTypes.func.isRequired
+    qualities: PropTypes.array,
+    onDelete: PropTypes.func,
+    onBookmark: PropTypes.func
 };
 export default User;

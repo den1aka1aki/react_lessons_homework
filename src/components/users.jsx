@@ -19,8 +19,8 @@ const Users = ({ users, onDelete, onBookmark }) => {
 
 Users.propTypes = {
     users: PropTypes.array.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onBookmark: PropTypes.func.isRequired
+    onDelete: PropTypes.func,
+    onBookmark: PropTypes.func
 };
 
 export default Users;
