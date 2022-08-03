@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TableHeader from './tableHeader';
-import TableBody from './tableBody';
 import Bookmarks from './bookmarks';
 import QualitiesList from './qualitiesList';
+import Table from './table';
 
 const UsersTable = ({ users, onSort, selectedSort, onDelete, onBookmark }) => {
     const columns = {
@@ -53,17 +52,7 @@ const UsersTable = ({ users, onSort, selectedSort, onDelete, onBookmark }) => {
         }
     };
     return (
-        <table className='table'>
-            <TableHeader onSort={onSort} selectedSort={selectedSort} columns={columns}/>
-            <TableBody data={users} columns={columns}/>
-            {/* <tbody> */}
-            {/*     <Users */}
-            {/*         users={users} */}
-            {/*         onDelete={handleDelete} */}
-            {/*         onBookmark={handleBookmark} */}
-            {/*     /> */}
-            {/* </tbody> */}
-        </table>
+        <Table onSort={onSort} selectedSort={selectedSort} columns={columns} data={users}></Table>
     );
 };
 
