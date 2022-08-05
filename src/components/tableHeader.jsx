@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import SortIcon from './sortIcon';
 
 const TableHeader = ({ onSort, selectedSort, columns }) => {
+    const [directionIcon, setDirectionIcon] = useState('');
     const handleSort = (item) => {
+        selectedSort.order === 'asc' ? setDirectionIcon('up') : setDirectionIcon('down');
+        selectedSort.order === 'asc' ? console.log('asc') : console.log('desc');
         if (selectedSort.path === item) {
             onSort({ ...selectedSort, order: selectedSort.order === 'asc' ? 'desc' : 'asc' });
         } else {
@@ -11,21 +15,17 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
     };
     return (
         <thead>
-            <tr className=''>
-                {Object.keys(columns).map((colum) => (
+            <tr>
+                {Object.keys(columns).map((column) => (
                     <th
-                        key={colum}
-                        onClick={columns[colum].path ? () => handleSort(columns[colum].path) : undefined}
-                        {...{ role: columns[colum].path && 'button' }}
-                        className='' scope='col'> {columns[colum].name} </th>
+                        key={column}
+                        onClick={columns[column].path ? () => handleSort(columns[column].path, columns[column].name) : undefined}
+                        {...{ role: columns[column].path && 'button' }}
+                        scope='col'>
+                        {columns[column].name}
+                        <SortIcon direction={directionIcon} />
+                    </th>
                 ))}
-
-                {/* <th className='' scope='col'> Качества </th> */}
-                {/* <th onClick={() => handleSort('profession.name')} className='' scope='col'> Профессия </th> */}
-                {/* <th onClick={() => handleSort('completedMeetings')} className='' scope='col'> Встретился, раз </th> */}
-                {/* <th onClick={() => handleSort('rate')} className='' scope='col'> Оценка </th> */}
-                {/* <th></th> */}
-                {/* <th></th> */}
             </tr>
         </thead>
     );

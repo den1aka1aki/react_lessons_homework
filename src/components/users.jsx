@@ -36,6 +36,9 @@ const Users = () => {
             })
         );
     };
+    const handleSort = (item) => {
+        setSortBy(item);
+    };
 
     const handleDelete = (id) => {
         setUsers((prevState) => prevState.filter((users) => users !== id));
@@ -46,9 +49,6 @@ const Users = () => {
             : users;
         const count = filteredUsers.length;
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
-        const handleSort = (item) => {
-            setSortBy(item);
-        };
         useEffect(() => {
             api.professions.fetchAll().then((data) => setProfessions(data));
         }, []);
@@ -88,7 +88,12 @@ const Users = () => {
 
                     <div className='d-flex flex-column'>
                         <SearchStatus length={count} />
-                        <UsersTable users={userCrop} onDelete={handleDelete} onBookmark={handleBookmark} onSort={handleSort} selectedSort={sortBy} />
+                        <UsersTable
+                            users={userCrop}
+                            onDelete={handleDelete}
+                            onBookmark={handleBookmark}
+                            onSort={handleSort}
+                            selectedSort={sortBy} />
                         <div className='d-flex justify-content-center'>
                             <Pagination
                                 itemsCount={count}
