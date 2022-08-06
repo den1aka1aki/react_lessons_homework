@@ -53,16 +53,6 @@ const Users = () => {
             api.professions.fetchAll().then((data) => setProfessions(data));
             api.users.fetchAll().then((data) => setUsers(data));
         }, []);
-        // useEffect(() => {
-        //     if (currentPage !== 1) {
-        //         if (count <= 8) {
-        //             setCurrentPage(2);
-        //         }
-        //         if (count <= 4) {
-        //             setCurrentPage(1);
-        //         }
-        //     }
-        // }, [count]);
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
             setSelectedProf();
