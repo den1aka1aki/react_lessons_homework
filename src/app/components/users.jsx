@@ -16,17 +16,21 @@ const Users = () => {
     const pageSize = 4;
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState({ iter: 'name', order: 'asc' });
+    useEffect(() => {
+        api.professions.fetchAll().then((data) => setProfessions(data));
+        api.users.fetchAll().then((data) => setUsers(data));
+    }, []);
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
     };
-    const handleBookmark = (userBookmark) => {
+    const handleBookMark = (userBookMark) => {
         setUsers((prevState) =>
             prevState.map((user) => {
-                if (user._id === userBookmark) {
-                    if (user.bookmark === true) {
+                if (user._id === userBookMark) {
+                    if (user.bookmark) {
                         return { ...user, bookmark: false };
                     } else {
                         return { ...user, bookmark: true };
@@ -49,10 +53,6 @@ const Users = () => {
             : users;
         const count = filteredUsers.length;
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
-        useEffect(() => {
-            api.professions.fetchAll().then((data) => setProfessions(data));
-            api.users.fetchAll().then((data) => setUsers(data));
-        }, []);
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
             setSelectedProf();
@@ -76,12 +76,14 @@ const Users = () => {
 
                     <div className='d-flex flex-column'>
                         <SearchStatus length={count} />
-                        <UsersTable
-                            users={userCrop}
-                            onDelete={handleDelete}
-                            onBookmark={handleBookmark}
-                            onSort={handleSort}
-                            selectedSort={sortBy} />
+                        {count > 0 && (
+                            <UsersTable
+                                users={userCrop}
+                                onDelete={handleDelete}
+                                onBookMark={handleBookMark}
+                                onSort={handleSort}
+                                selectedSort={sortBy} />
+                        )}
                         <div className='d-flex justify-content-center'>
                             <Pagination
                                 itemsCount={count}
