@@ -4,9 +4,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import PropTypes from 'prop-types';
 
 const Bookmarks = ({ status }) => {
-    return (status
-        ? <i className='bi bi-bag-heart-fill'></i>
-        : <i className='bi bi-bag-heart'></i>
+    return (
+        <i className={`bi bi-bag-heart${status ? '-fill' : ''}`}></i>
     );
 };
 

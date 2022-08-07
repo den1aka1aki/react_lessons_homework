@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 
 const Pagination = ({ itemsCount, pageSize, onPageChange, currentPage }) => {
     const pageCount = Math.ceil(itemsCount / pageSize);
+    useEffect(() => {
+        if (currentPage > pageCount) {
+            onPageChange(pageCount);
+        }
+    }, [pageCount]);
+
     if (pageCount === 0) return null;
     const pages = _.range(1, pageCount + 1);
+
     return (
         <nav>
             <ul className="pagination">
