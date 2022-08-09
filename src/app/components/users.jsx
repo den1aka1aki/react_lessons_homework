@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-
 import _ from 'lodash';
 import api from '../api';
 import { paginate } from '../utils/paginate';
@@ -10,7 +9,7 @@ import UsersTable from './usersTable';
 import Pagination from './pagination';
 
 const Users = () => {
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState();
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const pageSize = 4;

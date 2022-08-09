@@ -5,11 +5,12 @@ import PropTypes from 'prop-types';
 
 const Table = ({ onSort, selectedSort, columns, data }) => {
     return (
-        <table className='table'>
-            <TableHeader onSort={onSort} selectedSort={selectedSort} columns={columns}/>
-            <TableBody data={data} columns={columns}/>
-        </table>
-
+        <>
+            <table className='table'>
+                <TableHeader onSort={onSort} selectedSort={selectedSort} columns={columns}/>
+                <TableBody data={data} columns={columns}/>
+            </table>
+        </>
     );
 };
 
