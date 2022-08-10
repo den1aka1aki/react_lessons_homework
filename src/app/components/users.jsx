@@ -12,7 +12,7 @@ const Users = () => {
     const [users, setUsers] = useState();
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
-    const pageSize = 4;
+    const pageSize = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState({ iter: 'name', order: 'asc' });
     useEffect(() => {
@@ -56,7 +56,6 @@ const Users = () => {
         const clearFilter = () => {
             setSelectedProf();
         };
-
         return (
             professions && (
                 <div className='d-flex'>
@@ -81,7 +80,8 @@ const Users = () => {
                                 onDelete={handleDelete}
                                 onBookMark={handleBookMark}
                                 onSort={handleSort}
-                                selectedSort={sortBy} />
+                                selectedSort={sortBy}
+                            />
                         )}
                         <div className='d-flex justify-content-center'>
                             <Pagination
@@ -102,7 +102,8 @@ const Users = () => {
 Users.propTypes = {
     users: PropTypes.array,
     onDelete: PropTypes.func,
-    onBookmark: PropTypes.func
+    onBookmark: PropTypes.func,
+    onUserLink: PropTypes.func
 };
 
 export default Users;
