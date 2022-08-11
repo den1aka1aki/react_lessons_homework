@@ -21,9 +21,9 @@ const UserCard = () => {
                 <div className='m-3 '>
                     <h2>{user.name}</h2>
                     <h3>Провефессия: {user.profession.name}</h3>
-                    <p><QualitiesList qualities={user.qualities} /></p>
+                    <span><QualitiesList qualities={user.qualities} /></span>
                     <p>Completed Meetings: {user.completedMeetings}</p>
-                    <h2>Rate: {user.rate}</h2>
+                    <h4>Rate: {user.rate}</h4>
                     <button onClick={backButton}>Все пользователи</button>
                 </div>
             </>
