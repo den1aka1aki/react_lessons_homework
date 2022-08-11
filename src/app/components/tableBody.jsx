@@ -13,9 +13,8 @@ const TableBody = ({ data, columns }) => {
             return content;
         }
         if (columns[column].path === 'name') {
-            const userId = item._id;
             return <>
-                <Link to ={'/usercard/' + userId}>{item.name}</Link>
+                <Link to ={'/users/' + item._id}>{item.name}</Link>
             </>;
         }
         return _.get(item, columns[column].path);
