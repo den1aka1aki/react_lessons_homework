@@ -5,7 +5,6 @@ import QualitiesList from './qualitiesList';
 
 const UserCard = () => {
     const { userid } = useParams();
-    console.log('this.context:', userid);
     const [user, setUser] = useState();
     const history = useHistory();
     useEffect(() => {
@@ -16,17 +15,17 @@ const UserCard = () => {
     const backButton = () => {
         history.replace('/users');
     };
-    console.log({ user });
     if (user) {
         return (
             <>
-                <h2>{user.name}</h2>
-                <h3>Провефессия: {user.profession.name}</h3>
-                <p><QualitiesList qualities={user.qualities} /></p>
-                <p>Completed Meetings: {user.completedMeetings}</p>
-                <h2>Rate: {user.rate}</h2>
-                <button onClick={backButton}>Все пользователи</button>
-
+                <div className='m-3 '>
+                    <h2>{user.name}</h2>
+                    <h3>Провефессия: {user.profession.name}</h3>
+                    <p><QualitiesList qualities={user.qualities} /></p>
+                    <p>Completed Meetings: {user.completedMeetings}</p>
+                    <h2>Rate: {user.rate}</h2>
+                    <button onClick={backButton}>Все пользователи</button>
+                </div>
             </>
         );
     }
