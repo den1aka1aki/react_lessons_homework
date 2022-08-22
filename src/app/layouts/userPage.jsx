@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import api from '../api';
-import QualitiesList from './qualitiesList';
+import QualitiesList from '../components/qualitiesList';
+import PropTypes from 'prop-types';
 
-const UserCard = () => {
-    const { userid } = useParams();
-    const [user, setUser] = useState();
+const UserPage = ({ userId }) => {
     const history = useHistory();
+    const [user, setUser] = useState();
     useEffect(() => {
-        api.users.getById(userid).then((data) => {
+        api.users.getById(userId).then((data) => {
             setUser(data);
         });
-    }, []);
-    const backButton = () => {
-        history.replace('/users');
+    });
+    const handleClick = () => {
+        history.push('/users');
     };
     if (user) {
         return (
@@ -24,7 +24,7 @@ const UserCard = () => {
                     <span><QualitiesList qualities={user.qualities} /></span>
                     <p>Completed Meetings: {user.completedMeetings}</p>
                     <h4>Rate: {user.rate}</h4>
-                    <button onClick={backButton}>Все пользователи</button>
+                    <button onClick={handleClick}>Все пользователи</button>
                 </div>
             </>
         );
@@ -32,4 +32,7 @@ const UserCard = () => {
     return 'loading...';
 };
 
-export default UserCard;
+UserPage.propTypes = {
+    userId: PropTypes.string
+};
+export default UserPage;

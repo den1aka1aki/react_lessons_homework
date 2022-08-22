@@ -1,11 +1,10 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Route, Switch } from 'react-router-dom';
-import MainPage from './components/mainPage';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import MainPage from './layouts/mainPage';
 import NavBar from './components/navBar';
-import Login from './components/login';
-import UserCard from './components/userCard';
-import Users from './components/users';
+import Login from './layouts/login';
+import Users from './layouts/users';
 
 const App = () => {
     return (
@@ -13,9 +12,9 @@ const App = () => {
             <NavBar/>
             <Switch>
                 <Route exact path ='/' component={MainPage}/>
-                <Route exact path ='/users' component={Users}/>
                 <Route path ='/login' component={Login}/>
-                <Route path='/users/:userid?' component={UserCard}/>
+                <Route path='/users/:userId?' component={Users}/>
+                <Redirect to='/'/>
             </Switch>
 
         </>

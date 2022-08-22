@@ -4,7 +4,7 @@
 //
 //
 //
-// const Users = () => {
+// const UsersList = () => {
 //   // const renderPhrase =(number) =>{
 //   //   if (number <= 4 && number>1) {
 //   //     return  <span className='badge bg-primary p-2 w-25'>{number} человека тусанет с тобой сегодня</span>
@@ -63,4 +63,4 @@
 //   );
 // };
 //
-// export default Users;
+// export default UsersList;
