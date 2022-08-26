@@ -7,11 +7,14 @@ import GroupList from './groupList';
 import SearchStatus from './searchStatus';
 import UsersTable from './usersTable';
 import Pagination from './pagination';
+import TextField from './textField';
 
 const UsersList = () => {
     const [users, setUsers] = useState();
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
+    const [search, setSearch] = useState('');
+    const [searchedUsers, setSearchedUsers] = useState();
     const pageSize = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState({ iter: 'name', order: 'asc' });
@@ -24,6 +27,12 @@ const UsersList = () => {
     };
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
+        setSearch('');
+        setSearchedUsers();
+    };
+    const handleSearch = (e) => {
+        setSearch(e);
+        setSearchedUsers(users.filter((user) => user.name.toLowerCase().includes(e)));
     };
     const handleBookMark = (userBookMark) => {
         setUsers((prevState) =>
@@ -74,9 +83,10 @@ const UsersList = () => {
 
                     <div className='d-flex flex-column'>
                         <SearchStatus length={count} />
+                        <TextField onChange={(e) => handleSearch(e.target.value)} value={search}/>
                         {count > 0 && (
                             <UsersTable
-                                users={userCrop}
+                                users={searchedUsers || userCrop}
                                 onDelete={handleDelete}
                                 onBookMark={handleBookMark}
                                 onSort={handleSort}
