@@ -83,7 +83,7 @@ const UsersList = () => {
 
                     <div className='d-flex flex-column'>
                         <SearchStatus length={count} />
-                        <TextField onChange={(e) => handleSearch(e.target.value)} value={search}/>
+                        <TextField onChange={(e) => handleSearch(e.target.value)} value={search} placeholder='Search...'/>
                         {count > 0 && (
                             <UsersTable
                                 users={searchedUsers || userCrop}
