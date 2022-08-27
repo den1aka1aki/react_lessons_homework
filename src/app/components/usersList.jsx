@@ -14,7 +14,7 @@ const UsersList = () => {
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [search, setSearch] = useState('');
-    const [searchedUsers, setSearchedUsers] = useState();
+    const [searchedUsers, setSearchedUsers] = useState('');
     const pageSize = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState({ iter: 'name', order: 'asc' });
@@ -22,18 +22,22 @@ const UsersList = () => {
         api.professions.fetchAll().then((data) => setProfessions(data));
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, []);
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
         setSearch('');
-        setSearchedUsers();
+        setSearchedUsers('');
     };
     const handleSearch = (e) => {
         setSearch(e);
-        setSearchedUsers(users.filter((user) => user.name.toLowerCase().includes(e)));
+        setSearchedUsers(users.filter((user) => user.name.toLowerCase().includes(e.toLowerCase())));
     };
+    console.log(searchedUsers.length);
     const handleBookMark = (userBookMark) => {
         setUsers((prevState) =>
             prevState.map((user) => {
@@ -60,6 +64,9 @@ const UsersList = () => {
             ? users.filter((user) => user.profession.name === selectedProf.name)
             : users;
         const count = filteredUsers.length;
+        const filteredPageNumber = () => {
+            return searchedUsers ? searchedUsers.length : count;
+        };
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
@@ -82,7 +89,7 @@ const UsersList = () => {
                     </div>
 
                     <div className='d-flex flex-column'>
-                        <SearchStatus length={count} />
+                        <SearchStatus length={filteredPageNumber()} />
                         <TextField onChange={(e) => handleSearch(e.target.value)} value={search} placeholder='Search...'/>
                         {count > 0 && (
                             <UsersTable
@@ -95,7 +102,7 @@ const UsersList = () => {
                         )}
                         <div className='d-flex justify-content-center'>
                             <Pagination
-                                itemsCount={count}
+                                itemsCount={filteredPageNumber()}
                                 pageSize={pageSize}
                                 currentPage={currentPage}
                                 onPageChange={handlePageChange}
