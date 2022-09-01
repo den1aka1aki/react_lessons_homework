@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Bookmarks from './bookmarks';
-import QualitiesList from './qualitiesList';
-import Table from './table';
+import Bookmarks from '../common/bookmarks';
+import Qualities from './qualities';
+import Table from '../common/table/table';
 import { Link } from 'react-router-dom';
 
 const UsersTable = ({ users, onSort, selectedSort, onDelete, onBookMark }) => {
@@ -16,7 +16,7 @@ const UsersTable = ({ users, onSort, selectedSort, onDelete, onBookMark }) => {
         qualities: {
             name: 'Качества',
             component: (user) => (
-                <QualitiesList qualities={user.qualities}/>
+                <Qualities qualities={user.qualities}/>
             )
         },
         professions: {
