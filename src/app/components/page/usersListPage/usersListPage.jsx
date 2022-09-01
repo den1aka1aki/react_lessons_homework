@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import api from '../api';
-import { paginate } from '../utils/paginate';
-import GroupList from './groupList';
-import SearchStatus from './searchStatus';
-import UsersTable from './usersTable';
-import Pagination from './pagination';
+import api from '../../../api';
+import { paginate } from '../../../utils/paginate';
+import GroupList from '../../common/groupList';
+import SearchStatus from '../../ui/searchStatus';
+import UsersTable from '../../ui/usersTable';
+import Pagination from '../../common/pagination';
+import TextField from '../../common/form/textField';
 
-const Users = () => {
+const UsersListPage = () => {
     const [users, setUsers] = useState();
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
+    const [search, setSearch] = useState('');
+    const [searchedUsers, setSearchedUsers] = useState('');
     const pageSize = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState({ iter: 'name', order: 'asc' });
@@ -19,12 +22,22 @@ const Users = () => {
         api.professions.fetchAll().then((data) => setProfessions(data));
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, []);
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
+        setSearch('');
+        setSearchedUsers('');
     };
+    const handleSearch = (e) => {
+        setSearch(e);
+        setSearchedUsers(users.filter((user) => user.name.toLowerCase().includes(e.toLowerCase())));
+    };
+    console.log(searchedUsers.length);
     const handleBookMark = (userBookMark) => {
         setUsers((prevState) =>
             prevState.map((user) => {
@@ -51,6 +64,9 @@ const Users = () => {
             ? users.filter((user) => user.profession.name === selectedProf.name)
             : users;
         const count = filteredUsers.length;
+        const filteredPageNumber = () => {
+            return searchedUsers ? searchedUsers.length : count;
+        };
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
@@ -73,10 +89,11 @@ const Users = () => {
                     </div>
 
                     <div className='d-flex flex-column'>
-                        <SearchStatus length={count} />
+                        <SearchStatus length={filteredPageNumber()} />
+                        <TextField onChange={(e) => handleSearch(e.target.value)} value={search} placeholder='Search...'/>
                         {count > 0 && (
                             <UsersTable
-                                users={userCrop}
+                                users={searchedUsers || userCrop}
                                 onDelete={handleDelete}
                                 onBookMark={handleBookMark}
                                 onSort={handleSort}
@@ -85,7 +102,7 @@ const Users = () => {
                         )}
                         <div className='d-flex justify-content-center'>
                             <Pagination
-                                itemsCount={count}
+                                itemsCount={filteredPageNumber()}
                                 pageSize={pageSize}
                                 currentPage={currentPage}
                                 onPageChange={handlePageChange}
@@ -99,11 +116,11 @@ const Users = () => {
     return 'loading...';
 };
 
-Users.propTypes = {
+UsersListPage.propTypes = {
     users: PropTypes.array,
     onDelete: PropTypes.func,
     onBookmark: PropTypes.func,
     onUserLink: PropTypes.func
 };
 
-export default Users;
+export default UsersListPage;
