@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { validator } from '../../utils/validator';
 import TextField from '../common/form/textField';
+import api from '../../api';
+import SelectField from '../common/form/selectField';
+import RadioField from '../common/form/radioField';
 
 const RegisterForm = () => {
-    const [data, setData] = useState({ email: '', password: '' });
+    const [professions, setProfessions] = useState();
+    const [data, setData] = useState({ email: '', password: '', profession: '', sex: 'male' });
     const [errors, setErrors] = useState({});
+    useEffect(() => {
+        api.professions.fetchAll().then((data) => setProfessions(data));
+    }, []);
     const handleChange = ({ target }) => {
         setData((prevState) => ({
             ...prevState,
@@ -39,6 +46,11 @@ const RegisterForm = () => {
                     message: 'Пароль должен состоять минимум из 8 символов',
                     value: 8
                 }
+        },
+        profession: {
+            isRequired: {
+                message: 'Обязательно выберите вашу профессию'
+            }
         }
     };
     useEffect(() => {
@@ -72,6 +84,21 @@ const RegisterForm = () => {
                 value = {data.password}
                 onChange = {handleChange}
                 error = {errors.password}
+            />
+            <SelectField
+                label='Выберите вашу профессию'
+                defaultOption='Choose...'
+                options={professions}
+                onChange={handleChange}
+                value={data.profession}
+                error={errors.profession} />
+            <RadioField options={[
+                { name: 'Male', value: 'male' },
+                { name: 'Female', value: 'female' },
+                { name: 'Other', value: 'other' }]}
+            value={data.sex}
+            name = 'sex'
+            onChange={handleChange}
             />
             <button className='btn btn-primary w-100 mx-auto' type='submit' disabled={!isValid}>Submit</button>
         </form>
