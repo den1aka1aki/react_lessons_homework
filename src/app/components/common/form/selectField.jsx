@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SelectField = ({ label, value, onChange, defaultOption, options, error }) => {
+const SelectField = ({ label, value, onChange, defaultOption, options, error, name }) => {
+    const handleChange = ({ target }) => {
+        onChange({ name: target.name, value: target.value });
+    };
     const getInputClasses = () => {
         return 'form-select' + (error ? ' is-invalid' : '');
     };
@@ -10,26 +13,24 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error }) 
         : options;
     return (
         <div className='mb-4'>
-            <label htmlFor='validationCustom04' className='form-label'>
+            <label htmlFor={name} className='form-label'>
                 {label}
             </label>
             <select
                 className={getInputClasses()}
-                id='validationCustom04'
-                name='profession'
+                id={name}
+                name={name}
                 value={value}
-                onChange={onChange}>
+                onChange={handleChange}>
                 <option disabled value=''>
                     {defaultOption}
                 </option>
-                {optionsArray && optionsArray.map(option =>
-                    <option
-                        key={option.value}
-                        value={option.value}
-                    >
-                        {option.name}
-                    </option>
-                )}
+                {optionsArray &&
+                    optionsArray.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.name}
+                        </option>
+                    ))}
             </select>
             {error && <div className='invalid-feedback'>{error}</div>}
         </div>
@@ -39,6 +40,7 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error }) 
 SelectField.propTypes = {
     defaultOption: PropTypes.string,
     label: PropTypes.string,
+    name: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
