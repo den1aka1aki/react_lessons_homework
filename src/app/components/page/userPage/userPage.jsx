@@ -13,8 +13,8 @@ const UserPage = ({ userId }) => {
             setUser(data);
         }, []);
     });
-    const handleClick = () => {
-        history.push('/users');
+    const handleEdit = () => {
+        history.push(`/users/${user._id}/edit`);
     };
     if (user) {
         return (
@@ -25,7 +25,13 @@ const UserPage = ({ userId }) => {
                     <span><Quality qualities={user.qualities} /></span>
                     <p>Completed Meetings: {user.completedMeetings}</p>
                     <h4>Rate: {user.rate}</h4>
-                    <button onClick={handleClick}>Все пользователи</button>
+                    <button
+                        className="btn btn-danger"
+                        onClick={() => {
+                            handleEdit();
+                        }}>
+                        Изменить пользователя
+                    </button>
                 </div>
             </>
         );
