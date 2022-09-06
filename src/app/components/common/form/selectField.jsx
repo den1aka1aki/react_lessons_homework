@@ -8,9 +8,14 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error, na
     const getInputClasses = () => {
         return 'form-select' + (error ? ' is-invalid' : '');
     };
-    const optionsArray = !Array.isArray(options) && typeof options === 'object'
-        ? Object.keys(options).map((optionName) => ({ name: options[optionName].name, value: options[optionName]._id }))
-        : options;
+    // const optionsArray = !Array.isArray(options) && typeof options === 'object'
+    //     ? Object.keys(options).map((optionName) => ({ name: options[optionName].name, value: options[optionName]._id }))
+    //     : options;
+
+    const optionsArray =
+        !Array.isArray(options) && typeof options === 'object'
+            ? Object.values(options)
+            : options;
     return (
         <div className='mb-4'>
             <label htmlFor={name} className='form-label'>
@@ -25,10 +30,10 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error, na
                 <option disabled value=''>
                     {defaultOption}
                 </option>
-                {optionsArray &&
+                {optionsArray.length > 0 &&
                     optionsArray.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {option.name}
+                        <option value={option.value} key={option.value}>
+                            {option.label}
                         </option>
                     ))}
             </select>
