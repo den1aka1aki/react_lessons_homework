@@ -104,12 +104,6 @@ const EditUserPage = () => {
                 {
                     message: 'Данное поле обязательно для заполнения'
                 }
-        },
-        profession: {
-            isRequired:
-                {
-                    message: 'Данное поле обязательно для заполнения'
-                }
         }
     };
     const validate = () => {
@@ -145,7 +139,6 @@ const EditUserPage = () => {
                                 label='Профессия'
                                 defaultOption='Choose...'
                                 name='profession'
-                                error={errors.profession}
                                 options={professions}
                                 onChange={handleChange}
                                 value={data.profession}
