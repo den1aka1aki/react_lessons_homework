@@ -50,7 +50,7 @@ const LoginForm = () => {
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
-    const isValid = Object.keys(errors).length === 0;
+    const isValid = !Object.keys(errors).length;
     const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
