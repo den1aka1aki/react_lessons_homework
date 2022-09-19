@@ -8,10 +8,6 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error, na
     const getInputClasses = () => {
         return 'form-select' + (error ? ' is-invalid' : '');
     };
-    // const optionsArray = !Array.isArray(options) && typeof options === 'object'
-    //     ? Object.keys(options).map((optionName) => ({ name: options[optionName].name, value: options[optionName]._id }))
-    //     : options;
-
     const optionsArray =
         !Array.isArray(options) && typeof options === 'object'
             ? Object.values(options)
