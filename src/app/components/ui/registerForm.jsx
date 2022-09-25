@@ -8,7 +8,7 @@ import MultiSelectField from '../common/form/multiSelectField';
 import CheckBoxField from '../common/form/checkBoxField';
 
 const RegisterForm = () => {
-    const [professions, setProfessions] = useState();
+    const [professions, setProfessions] = useState([]);
     const [data, setData] = useState({ email: '', password: '', profession: '', sex: 'male', qualities: [], licence: false });
     const [errors, setErrors] = useState({});
     const [qualities, setQualities] = useState([]);
