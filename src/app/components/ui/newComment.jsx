@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import SelectField from '../common/form/selectField';
 import api from '../../api';
 import { validator } from '../../utils/validator';
-import TextField from '../common/form/textField';
+import PropTypes from 'prop-types';
+import TextAreaField from '../common/form/textAreaField';
 const initialData = { userId: '', content: '' };
-const NewComment = () => {
+
+const NewComment = ({ onSubmit }) => {
     const [user, setUser] = useState([]);
     const [data, setData] = useState(initialData);
     const [errors, setErrors] = useState([]);
@@ -43,11 +45,24 @@ const NewComment = () => {
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
+    const clearForm = () => {
+        setData(initialData);
+        setErrors({});
+    };
+    const isValid = Object.keys(errors).length === 0;
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const isValid = validate();
+        if (!isValid) return;
+        onSubmit(data);
+        clearForm();
+    };
+
     return (
         <div className="col-md-8">
             <div className="card mb-2">
                 <div className="card-body">
-                    <div>
+                    <form onSubmit={handleSubmit}>
                         <h2>New comment</h2>
                         <div className="mb-4">
                             <SelectField label='Выберите пользователя'
@@ -62,19 +77,23 @@ const NewComment = () => {
                                 htmlFor="exampleFormControlTextarea1"
                                 className="form-label"
                             ></label>
-                            <TextField
+                            <TextAreaField
                                 label='Сообщение...'
                                 name = 'content'
                                 value = {data.content}
                                 onChange = {handleChange}
                                 error = {errors.content}>
-                            </TextField>
+                            </TextAreaField>
+                            <button className='btn btn-primary w-100 mx-auto' type='submit' disabled={!isValid}>Подтвердить</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     );
+};
+NewComment.propTypes = {
+    onSubmit: PropTypes.func
 };
 
 export default NewComment;

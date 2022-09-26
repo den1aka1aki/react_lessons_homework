@@ -10,6 +10,9 @@ const Comments = () => {
     useEffect(() => {
         api.comments.fetchCommentsForUser(userId).then((data) => setComments(data));
     }, []);
+    const handleSubmit = (data) => {
+        api.comments.add({ ...data, pageId: userId }).then((data) => setComments([...comments, data]));
+    };
     const handleRemoveComment = (id) => {
         api.comments.remove(id).then((id) => {
             setComments((prevState) => prevState.filter((x) => x._id !== id));
@@ -18,7 +21,7 @@ const Comments = () => {
     return (
         <>
             <div>
-                <NewComment/>
+                <NewComment onSubmit={handleSubmit}/>
                 <CommentList comment = { comments } onClick = {handleRemoveComment}/>
             </div>
         </>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import api from '../../../api';
 import AvatarLoader from '../../../utils/avatarLoader';
+import { displayDate } from '../../../utils/displayDate';
 
 const Comment = ({ _id, userId, pageId, content, created_at: created, onClick }) => {
     const [user, setUser] = useState();
@@ -10,7 +11,6 @@ const Comment = ({ _id, userId, pageId, content, created_at: created, onClick })
             setUser(data);
         }, []);
     });
-
     return (
         <div className='bg-light card-body mb-3'>
             <div className='row'>
@@ -27,8 +27,7 @@ const Comment = ({ _id, userId, pageId, content, created_at: created, onClick })
                                             className=' d-flex justify-content-between align-items-center '>
                                             <p className='mb-1'>
                                                 {user.name}
-                                                <span className='small'>
-                                                5 минут назад
+                                                <span className='small'> - {displayDate(created)}
                                                 </span>
                                             </p>
                                             <button
