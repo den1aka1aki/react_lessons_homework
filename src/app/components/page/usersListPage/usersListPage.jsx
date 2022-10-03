@@ -7,14 +7,12 @@ import GroupList from '../../common/groupList';
 import SearchStatus from '../../ui/searchStatus';
 import UsersTable from '../../ui/usersTable';
 import Pagination from '../../common/pagination';
-import TextField from '../../common/form/textField';
 
 const UsersListPage = () => {
     const [users, setUsers] = useState();
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
-    const [search, setSearch] = useState('');
-    const [searchedUsers, setSearchedUsers] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const pageSize = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState({ iter: 'name', order: 'asc' });
@@ -24,20 +22,19 @@ const UsersListPage = () => {
     }, []);
     useEffect(() => {
         setCurrentPage(1);
-    }, []);
+    }, [selectedProf, searchQuery]);
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
     const handleProfessionSelect = (item) => {
+        if (searchQuery !== '') setSearchQuery('');
         setSelectedProf(item);
-        setSearch('');
-        setSearchedUsers('');
     };
-    const handleSearch = (e) => {
-        setSearch(e);
-        setSearchedUsers(users.filter((user) => user.name.toLowerCase().includes(e.toLowerCase())));
+    const handleSearchQuery = ({ target }) => {
+        setSelectedProf(undefined);
+        setSearchQuery(target.value);
     };
-    console.log(searchedUsers.length);
+
     const handleBookMark = (userBookMark) => {
         setUsers((prevState) =>
             prevState.map((user) => {
@@ -60,13 +57,21 @@ const UsersListPage = () => {
         setUsers((prevState) => prevState.filter((users) => users !== id));
     };
     if (users) {
-        const filteredUsers = selectedProf
-            ? users.filter((user) => user.profession.name === selectedProf.name)
-            : users;
+        const filteredUsers = searchQuery
+            ? users.filter(
+                (user) =>
+                    user.name
+                        .toLowerCase()
+                        .indexOf(searchQuery.toLowerCase()) !== -1
+            )
+            : selectedProf
+                ? users.filter(
+                    (user) =>
+                        JSON.stringify(user.profession) ===
+                        JSON.stringify(selectedProf)
+                )
+                : users;
         const count = filteredUsers.length;
-        const filteredPageNumber = () => {
-            return searchedUsers ? searchedUsers.length : count;
-        };
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
@@ -84,16 +89,16 @@ const UsersListPage = () => {
                         <button
                             className='btn btn-secondary mt-2'
                             onClick={clearFilter}>
-                        Очистить
+                            Очистить
                         </button>
                     </div>
 
                     <div className='d-flex flex-column'>
-                        <SearchStatus length={filteredPageNumber()} />
-                        <TextField onChange={(e) => handleSearch(e.target.value)} value={search} placeholder='Search...'/>
+                        <SearchStatus length={count} />
+                        <input onChange={handleSearchQuery} type='text' name='searchQuery' value={searchQuery} placeholder='Search...'/>
                         {count > 0 && (
                             <UsersTable
-                                users={searchedUsers || userCrop}
+                                users={userCrop}
                                 onDelete={handleDelete}
                                 onBookMark={handleBookMark}
                                 onSort={handleSort}
@@ -101,12 +106,13 @@ const UsersListPage = () => {
                             />
                         )}
                         <div className='d-flex justify-content-center'>
-                            <Pagination
-                                itemsCount={filteredPageNumber()}
+                            {filteredUsers.length >= pageSize && (<Pagination
+                                itemsCount={count}
                                 pageSize={pageSize}
                                 currentPage={currentPage}
                                 onPageChange={handlePageChange}
                             />
+                            )}
                         </div>
                     </div>
                 </div>
