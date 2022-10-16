@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Comment from '../common/comments/comment';
+import Comment from './comment';
 
 const CommentList = ({ comment, onClick }) => {
     return comment.map((comment) => (

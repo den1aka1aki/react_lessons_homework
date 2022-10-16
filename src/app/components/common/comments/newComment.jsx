@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import SelectField from '../common/form/selectField';
-import api from '../../api';
-import { validator } from '../../utils/validator';
+import SelectField from '../form/selectField';
+import api from '../../../api';
+import { validator } from '../../../utils/validator';
 import PropTypes from 'prop-types';
-import TextAreaField from '../common/form/textAreaField';
+import TextAreaField from '../form/textAreaField';
 const initialData = { userId: '', content: '' };
 
 const NewComment = ({ onSubmit }) => {

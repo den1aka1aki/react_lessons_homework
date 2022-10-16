@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import NewComment from './newComment';
-import CommentList from './commentList';
+import NewComment from '../common/comments/newComment';
+import CommentList from '../common/comments/commentList';
+import { orderBy } from 'lodash';
 import { useParams } from 'react-router-dom';
 import api from '../../api';
 
@@ -18,12 +19,22 @@ const Comments = () => {
             setComments((prevState) => prevState.filter((x) => x._id !== id));
         });
     };
+    const sortedComments = orderBy(comments, ['created_at'], ['desc']);
     return (
         <>
-            <div>
-                <NewComment onSubmit={handleSubmit}/>
-                <CommentList comment = { comments } onClick = {handleRemoveComment}/>
-            </div>
+            <NewComment onSubmit={handleSubmit}/>
+            {sortedComments.length > 0 && (
+                <div className="card mb-3">
+                    <div className="card-body ">
+                        <h2>Comments</h2>
+                        <hr />
+                        <CommentList
+                            comment={sortedComments}
+                            onClick ={handleRemoveComment}
+                        />
+                    </div>
+                </div>
+            )}
         </>
     );
 };
