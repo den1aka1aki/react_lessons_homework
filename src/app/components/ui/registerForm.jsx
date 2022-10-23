@@ -104,8 +104,8 @@ const RegisterForm = () => {
         try {
             await sighUp(newData);
             history.push('/');
-        } catch (e) {
-            setErrors(e);
+        } catch (error) {
+            setErrors(error);
         }
     };
     return (
