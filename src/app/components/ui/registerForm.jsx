@@ -17,7 +17,7 @@ const RegisterForm = () => {
     const { qualities } = useQualities();
     const { sighUp } = useAuth();
     const qualitiesList = qualities.map(q => ({ label: q.name, value: q._id }));
-    const [data, setData] = useState({ email: '', password: '', profession: '', sex: 'male', qualities: [], licence: false });
+    const [data, setData] = useState({ email: '', password: '', profession: '', sex: 'male', name: '', qualities: [], licence: false });
     const [errors, setErrors] = useState({});
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -30,28 +30,23 @@ const RegisterForm = () => {
             isRequired:
                 {
                     message: 'Электронная почта обязательна для заполнения'
+                }
+        },
+        name: {
+            isRequired:
+                {
+                    message: 'Имя обязательна для заполнения'
                 },
-            isEmail: {
-                message: 'Email введен не верно'
-            }
+            min:
+                {
+                    message: 'Имя должен состоять минимум из 3 символов',
+                    value: 3
+                }
         },
         password: {
             isRequired:
                 {
                     message: 'Пароль обязательна для заполнения'
-                },
-            isCapitalSymbol:
-                {
-                    message: 'Пароль должен содержать хотя бы одну заглавную букву'
-                },
-            isContainDigit:
-                {
-                    message: 'Пароль должен сожержать хотя бы одно число'
-                },
-            min:
-                {
-                    message: 'Пароль должен состоять минимум из 8 символов',
-                    value: 8
                 }
         },
         profession: {
@@ -116,6 +111,13 @@ const RegisterForm = () => {
                 value = {data.email}
                 onChange = {handleChange}
                 error = {errors.email}
+            />
+            <TextField
+                label = 'Имя'
+                name = 'name'
+                value = {data.name}
+                onChange = {handleChange}
+                error = {errors.name}
             />
             <TextField
                 label = 'Пароль'
