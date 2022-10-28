@@ -12,12 +12,10 @@ const NavProfile = () => {
         <div className='dropdown' onClick={toggleMenu}>
             <div className='btn dropdown-toggle d-flex align-items-center'>
                 <div className='me-2'>{currentUser.name}</div>
-                <img src={`https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-                    .toString(36)
-                    .substring(7)}.svg`}
-                alt=''
-                height='40'
-                className='img-responsive rounded-cercle' />
+                <img src={currentUser.image}
+                    alt=''
+                    height='40'
+                    className='img-responsive rounded-cercle' />
             </div>
             <div className={'w-100 dropdown-menu' + (isOpen ? ' show' : '')}>
                 <Link to={`/users/${currentUser._id}`} className='dropdown-item'>Profile</Link>

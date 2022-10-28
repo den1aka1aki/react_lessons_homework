@@ -2,12 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // eslint-disable-next-line react/display-name
-const AvatarLoader = React.memo(({ width, height, className }) => {
+const AvatarLoader = React.memo(({ width, height, image, className }) => {
     return (
         <img
-            src={`https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-                .toString(36)
-                .substring(7)}.svg`}
+            src={image}
             className={className}
             alt="avatar"
             width={width}
@@ -18,6 +16,7 @@ const AvatarLoader = React.memo(({ width, height, className }) => {
 
 AvatarLoader.propTypes = {
     width: PropTypes.number,
+    image: PropTypes.object,
     height: PropTypes.number,
     className: PropTypes.string
 };

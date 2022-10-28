@@ -10,6 +10,7 @@ const LoginForm = () => {
     const [errors, setErrors] = useState({});
     const { singIn } = useAuth();
     const history = useHistory();
+    console.log(history);
     const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
@@ -60,8 +61,9 @@ const LoginForm = () => {
         const isValid = validate();
         if (!isValid) return;
         try {
-            await singIn(data);
             history.push('/');
+            await singIn(data);
+            // history.push(history.location.state.from.pathname ? history.location.state.from.pathname : '/');
         } catch (error) {
             setErrors(error);
         }

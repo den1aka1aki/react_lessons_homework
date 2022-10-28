@@ -4,10 +4,9 @@ import axios from 'axios';
 import userService from '../services/user.service';
 import { toast } from 'react-toastify';
 import localStorageService, { setTokens } from '../services/localStorage.service';
+import { useHistory } from 'react-router-dom';
 
-export const httpAuth = axios.create({
-    baseURL: 'https://identitytoolkit.googleapis.com/v1/accounts:'
-});
+export const httpAuth = axios.create();
 const AuthContext = React.createContext();
 
 export const useAuth = () => {
@@ -15,22 +14,33 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
+    const history = useHistory();
     const [currentUser, setUser] = useState();
     const [error, setError] = useState(null);
+    const [isLoading, setLoading] = useState(true);
 
     function randomInt (min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
     async function sighUp ({ email, password, ...rest }) {
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
         try {
-            const { data } = await httpAuth.post(`signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`, {
+            const { data } = await httpAuth.post(url, {
                 email,
                 password,
                 returnSecureToken: true
             });
             setTokens(data);
-            await createUser({ _id: data.localId, email, rate: randomInt(1, 5), complitedMeetings: randomInt(0, 200), ...rest });
-            console.log(data);
+            await createUser({
+                _id: data.localId,
+                email,
+                rate: randomInt(1, 5),
+                image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+                    .toString(36)
+                    .substring(7)}.svg`,
+                completedMeetings: randomInt(0, 200),
+                ...rest
+            });
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -45,14 +55,15 @@ const AuthProvider = ({ children }) => {
         }
     }
     async function singIn ({ email, password }) {
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
         try {
-            const { data } = await httpAuth.post(`signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`, {
+            const { data } = await httpAuth.post(url, {
                 email,
                 password,
                 returnSecureToken: true
             });
             setTokens(data);
-            getUserData();
+            await getUserData();
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -74,17 +85,26 @@ const AuthProvider = ({ children }) => {
             errorCatcher(e);
         }
     }
+    function logOut () {
+        localStorageService.removeAuthData();
+        setUser(null);
+        history.push('/');
+    }
     async function getUserData () {
         try {
             const { content } = await userService.getCurentUser();
             setUser(content);
         } catch (e) {
             errorCatcher(e);
+        } finally {
+            setLoading(false);
         }
     }
     useEffect(() => {
         if (localStorageService.getAccessToken()) {
             getUserData();
+        } else {
+            setLoading(false);
         }
     }, []);
     function errorCatcher (error) {
@@ -97,8 +117,8 @@ const AuthProvider = ({ children }) => {
         }
     }, [error]);
     return (
-        <AuthContext.Provider value={{ sighUp, currentUser, singIn }}>
-            {children}
+        <AuthContext.Provider value={{ sighUp, currentUser, singIn, logOut }}>
+            {!isLoading ? children : 'Loading...'}
         </AuthContext.Provider>
     );
 };
