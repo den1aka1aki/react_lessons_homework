@@ -5,11 +5,11 @@ import QualitiesCard from '../../ui/qualitiesCard';
 import MeetingsCard from '../../ui/meetingsCard';
 import Comments from '../../ui/comments';
 import { useUser } from '../../../hooks/useUsers';
+import { CommentsProvider } from '../../../hooks/useComments';
 
 const UserPage = ({ userId }) => {
     const { getUserById } = useUser();
     const user = getUserById(userId);
-    console.log(user);
     if (user) {
         return (
             <div className='container'>
@@ -20,7 +20,9 @@ const UserPage = ({ userId }) => {
                         <MeetingsCard data = {user.completedMeetings}/>
                     </div>
                     <div className='col-md-8'>
-                        <Comments/>
+                        <CommentsProvider>
+                            <Comments/>
+                        </CommentsProvider>
                     </div>
                 </div>
             </div>

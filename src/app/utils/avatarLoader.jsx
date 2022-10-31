@@ -16,7 +16,7 @@ const AvatarLoader = React.memo(({ width, height, image, className }) => {
 
 AvatarLoader.propTypes = {
     width: PropTypes.number,
-    image: PropTypes.object,
+    image: PropTypes.string,
     height: PropTypes.number,
     className: PropTypes.string
 };
