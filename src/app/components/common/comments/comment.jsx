@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import AvatarLoader from '../../../utils/avatarLoader';
 import { displayDate } from '../../../utils/displayDate';
 import { useUser } from '../../../hooks/useUsers';
+import { useAuth } from '../../../hooks/useAuth';
 
 const Comment = ({ _id, userId, content, created_at: created, onClick }) => {
     const { getUserById } = useUser();
     const user = getUserById(userId);
+    const { currentUser } = useAuth();
     return (
         <div className='bg-light card-body mb-3'>
             <div className='row'>
@@ -24,12 +26,14 @@ const Comment = ({ _id, userId, content, created_at: created, onClick }) => {
                                         <span className='small'> - {displayDate(created)}
                                         </span>
                                     </p>
-                                    <button
-                                        className=' btn btn-sm text-primary d-flex align-items-center '
-                                        onClick={() => onClick(_id)}
-                                    >
-                                        <i className=' bi bi-x-lg '></i>
-                                    </button>
+                                    {currentUser._id === userId &&
+                                        <button
+                                            className=' btn btn-sm text-primary d-flex align-items-center '
+                                            onClick={() => onClick(_id)}
+                                        >
+                                            <i className=' bi bi-x-lg '></i>
+                                        </button>}
+
                                 </div>
                                 <p className='small mb-0'>{content}</p>
                             </div>
