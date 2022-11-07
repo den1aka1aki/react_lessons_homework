@@ -24,8 +24,8 @@ const App = () => {
                             <Route exact path ='/' component={MainPage}/>
                             <Route path ='/login/:type?' component={Login}/>
                             <Route path = '/logout' component={LogOut}/>
-                            <ProtectedRoute path='/users/:userId/:edit' component={editUserPage}/>
-                            <Route path='/users/:userId?' component={Users}/>
+                            <ProtectedRoute path='/users/:userId/:edit' exact component={editUserPage}/>
+                            <Route path='/users/:userId?' exact component={Users}/>
                             <Redirect to='/'/>
                         </Switch>
                     </QualitiesProvider>
