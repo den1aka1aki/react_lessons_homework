@@ -3,90 +3,65 @@ import TextField from '../../common/form/textField';
 import SelectField from '../../common/form/selectField';
 import RadioField from '../../common/form/radioField';
 import MultiSelectField from '../../common/form/multiSelectField';
-import api from '../../../api';
-import { useHistory, useParams } from 'react-router-dom';
 import { validator } from '../../../utils/validator';
+import { useAuth } from '../../../hooks/useAuth';
+import { useProfessions } from '../../../hooks/useProfession';
+import { useQualities } from '../../../hooks/useQuality';
+import { useHistory, useParams } from 'react-router-dom';
 
 const EditUserPage = () => {
-    const { userId } = useParams();
-    const history = useHistory();
+    const { currentUser, createUser, handleRefresh } = useAuth();
+    const { professions } = useProfessions();
+    const { qualities } = useQualities();
+    const [user, setUser] = useState({});
+    const params = useParams();
+    const [isLoading, setLoading] = useState(true);
     const [errors, setErrors] = useState({});
-    const [professions, setProfessions] = useState();
-    const [qualities, setQualities] = useState([]);
-    const [data, setData] = useState({
-        name: '',
-        email: '',
-        profession: '',
-        sex: 'male',
-        qualities: []
-    });
+    useEffect(() => {
+        setUser(currentUser);
+        professions && qualities && setLoading(false);
+    }, []);
     const handleChange = (target) => {
-        setData((prevState) => {
+        setUser((prevState) => {
             return { ...prevState, [target.name]: target.value };
         });
     };
-    const transformData = (data) => {
-        return data.map((elem) => ({ label: elem.name, value: elem._id }));
-    };
+
+    const profList = professions.map((p) => ({
+        value: p._id,
+        label: p.name
+    }));
+    const qualList = qualities.map((q) => ({
+        value: q._id,
+        label: q.name,
+        color: q.color
+    }));
+    const history = useHistory();
+
     useEffect(() => {
-        api.users.getById(userId).then(({ profession, qualities, ...data }) =>
-            setData((prevState) => ({
-                ...prevState,
-                ...data,
-                qualities: transformData(qualities),
-                profession: profession._id
-            }))
-        );
-        api.professions.fetchAll().then((data) => {
-            const professionsList = Object.keys(data).map((professionName) => ({
-                label: data[professionName].name,
-                value: data[professionName]._id
-            }));
-            setProfessions(professionsList);
-        });
-        api.qualities.fetchAll().then((data) => {
-            const qualitiesList = Object.keys(data).map((optionName) => ({
-                value: data[optionName]._id,
-                label: data[optionName].name,
-                color: data[optionName].color
-            }));
-            setQualities(qualitiesList);
-        });
+        if (params.userId !== currentUser._id) {
+            history.push(`/users/${currentUser._id}/edit`);
+        }
     }, []);
-    const getProfById = (id) => {
-        for (const prof of professions) {
-            if (prof.value === id) {
-                return { _id: prof.value, name: prof.label };
-            }
-        }
-    };
-    const getQualities = (elements) => {
-        const qualitiesArray = [];
-        for (const elem of elements) {
-            for (const quality of qualities) {
-                if (elem.value === quality.value) {
-                    qualitiesArray.push({
-                        _id: quality.value,
-                        name: quality.label,
-                        color: quality.color
-                    });
-                    //  console.log(quality.label + quality.value + quality.color);
-                }
-            }
-        }
-        return qualitiesArray;
-    };
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        const { profession, qualities } = data;
-        api.users.update(userId, {
-            ...data,
-            profession: getProfById(profession),
-            qualities: getQualities(qualities)
-        })
-            .then((data) => history.push(`/users/${data._id}`));
+        try {
+            await createUser({
+                ...user,
+                qualities: user.qualities.map((q) => {
+                    if (q.value) {
+                        return q.value;
+                    } else {
+                        return q;
+                    }
+                })
+            });
+            await handleRefresh();
+        } catch (error) {
+            console.log(error);
+        }
     };
     const isValid = Object.keys(errors).length === 0;
     const validatorConfig = {
@@ -107,16 +82,16 @@ const EditUserPage = () => {
         }
     };
     const validate = () => {
-        const errors = validator(data, validatorConfig);
+        const errors = validator(currentUser, validatorConfig);
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
     useEffect(() => {
         validate();
-    }, [data]);
+    }, [user]);
 
-    if (data && professions) {
-        return (
+    return !isLoading
+        ? (
             <form onSubmit={handleSubmit}>
                 <div className='container mt-5'>
                     <div className='row'>
@@ -124,14 +99,14 @@ const EditUserPage = () => {
                             <TextField
                                 label='Имя'
                                 name='name'
-                                value={data.name}
+                                value={user.name}
                                 error={errors.name}
                                 onChange={handleChange}
                             />
                             <TextField
                                 label='Электронная почта'
                                 name='email'
-                                value={data.email}
+                                value={user.email}
                                 error={errors.email}
                                 onChange={handleChange}
                             />
@@ -139,9 +114,9 @@ const EditUserPage = () => {
                                 label='Профессия'
                                 defaultOption='Choose...'
                                 name='profession'
-                                options={professions}
+                                options={profList}
                                 onChange={handleChange}
-                                value={data.profession}
+                                value={user.profession}
                             />
                             <RadioField options={[
                                 {
@@ -156,25 +131,26 @@ const EditUserPage = () => {
                                     name: 'Other',
                                     value: 'other'
                                 }]}
-                            value={data.sex}
+                            value={user.sex}
                             name='sex'
                             onChange={handleChange}
                             label='Пол'
                             />
                             <MultiSelectField
                                 onChange={handleChange}
-                                options={qualities}
-                                defaultValue={data.qualities}
+                                options={qualList}
                                 name='qualities'
+                                defaultValue={qualList.filter((q) =>
+                                    user.qualities.includes(q.value)
+                                )}
                                 label='Качества' />
                             <button className='btn btn-primary w-100 mx-auto' disabled={!isValid} type='submit'>Обновить</button>
                         </div>
                     </div>
                 </div>
             </form>
-        );
-    }
-    return 'loading...';
+        )
+        : 'Loading...';
 };
 
 export default EditUserPage;
