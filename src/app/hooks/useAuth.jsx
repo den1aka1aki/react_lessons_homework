@@ -77,9 +77,17 @@ const AuthProvider = ({ children }) => {
             }
         }
     }
-    const handleRefresh = () => {
-        history.push(`/users/${currentUser._id}`);
-    };
+    async function updateUserData (data) {
+        try {
+            const { content } = await userService.update(data);
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    }
+    // const handleRefresh = () => {
+    //     history.push(`/users/${currentUser._id}`);
+    // };
     async function createUser (data) {
         try {
             const { content } = await userService.create(data);
@@ -120,7 +128,7 @@ const AuthProvider = ({ children }) => {
         }
     }, [error]);
     return (
-        <AuthContext.Provider value={{ sighUp, currentUser, handleRefresh, createUser, singIn, logOut }}>
+        <AuthContext.Provider value={{ sighUp, currentUser, updateUserData, singIn, logOut }}>
             {!isLoading ? children : 'Loading...'}
         </AuthContext.Provider>
     );
