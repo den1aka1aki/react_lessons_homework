@@ -4,17 +4,16 @@ import SelectField from '../../common/form/selectField';
 import RadioField from '../../common/form/radioField';
 import MultiSelectField from '../../common/form/multiSelectField';
 import { validator } from '../../../utils/validator';
-import { useAuth } from '../../../hooks/useAuth';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getQualities, getQualitiesLoadingStatus } from '../../../store/qualities';
-import { useHistory } from 'react-router-dom';
 import { getProfessions, getProfessionsLoadingStatus } from '../../../store/profession';
+import { getCurrentUserData, updateUser } from '../../../store/users';
 
 const EditUserPage = () => {
-    const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState();
-    const { currentUser, updateUserData } = useAuth();
+    const dispatch = useDispatch();
+    const currentUser = useSelector(getCurrentUserData());
     const qualities = useSelector(getQualities());
     const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const qualitiesList = qualities.map((q) => ({
@@ -30,16 +29,14 @@ const EditUserPage = () => {
     }));
     const [errors, setErrors] = useState({});
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        await updateUserData({
+        dispatch(updateUser({
             ...data,
             qualities: data.qualities.map((q) => q.value)
-        });
-
-        history.push(`/users/${currentUser._id}`);
+        }));
     };
     function getQualitiesListByIds (qualitiesIds) {
         const qualitiesArray = [];

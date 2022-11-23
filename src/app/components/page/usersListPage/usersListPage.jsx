@@ -6,14 +6,13 @@ import GroupList from '../../common/groupList';
 import SearchStatus from '../../ui/searchStatus';
 import UsersTable from '../../ui/usersTable';
 import Pagination from '../../common/pagination';
-import { useUser } from '../../../hooks/useUsers';
-import { useAuth } from '../../../hooks/useAuth';
 import { useSelector } from 'react-redux';
 import { getProfessions, getProfessionsLoadingStatus } from '../../../store/profession';
+import { getCurrentUserId, getUsersList } from '../../../store/users';
 
 const UsersListPage = () => {
-    const { users } = useUser();
-    const { currentUser } = useAuth();
+    const users = useSelector(getUsersList());
+    const currentUserId = useSelector(getCurrentUserId());
     const professions = useSelector(getProfessions());
     const professionsLoading = useSelector(getProfessionsLoadingStatus());
     const [selectedProf, setSelectedProf] = useState();
@@ -54,73 +53,75 @@ const UsersListPage = () => {
     const handleDelete = (id) => {
         console.log(id);
     };
-
-    function filterUsers (data) {
-        const filteredUsers = searchQuery
-            ? data.filter(
-                (user) =>
-                    user.name
-                        .toLowerCase()
-                        .indexOf(searchQuery.toLowerCase()) !== -1
-            )
-            : selectedProf
+    if (users) {
+        function filterUsers (data) {
+            const filteredUsers = searchQuery
                 ? data.filter(
                     (user) =>
-                        JSON.stringify(user.profession) ===
-                        JSON.stringify(selectedProf)
+                        user.name
+                            .toLowerCase()
+                            .indexOf(searchQuery.toLowerCase()) !== -1
                 )
-                : data;
-        return filteredUsers.filter((u) => u._id !== currentUser._id);
-    }
-    const filteredUsers = filterUsers(users);
-    const count = filteredUsers.length;
-    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
-    const userCrop = paginate(sortedUsers, currentPage, pageSize);
-    const clearFilter = () => {
-        setSelectedProf();
-    };
-    return (
-        <div className='d-flex'>
-            {professions && !professionsLoading && (
-                <div className='d-flex flex-column flex-shrink-0 p-3'>
-                    <GroupList
-                        selectedItem={selectedProf}
-                        items={professions}
-                        onItemSelect={handleProfessionSelect}
-                    />
-                    <button
-                        className='btn btn-secondary mt-2'
-                        onClick={clearFilter}>
+                : selectedProf
+                    ? data.filter(
+                        (user) =>
+                            JSON.stringify(user.profession) ===
+                        JSON.stringify(selectedProf)
+                    )
+                    : data;
+            return filteredUsers.filter((u) => u._id !== currentUserId);
+        }
+        const filteredUsers = filterUsers(users);
+        const count = filteredUsers.length;
+        const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+        const userCrop = paginate(sortedUsers, currentPage, pageSize);
+        const clearFilter = () => {
+            setSelectedProf();
+        };
+        return (
+            <div className='d-flex'>
+                {professions && !professionsLoading && (
+                    <div className='d-flex flex-column flex-shrink-0 p-3'>
+                        <GroupList
+                            selectedItem={selectedProf}
+                            items={professions}
+                            onItemSelect={handleProfessionSelect}
+                        />
+                        <button
+                            className='btn btn-secondary mt-2'
+                            onClick={clearFilter}>
                             Очистить
-                    </button>
-                </div>
-            )}
-
-            <div className='d-flex flex-column'>
-                <SearchStatus length={count} />
-                <input onChange={handleSearchQuery} type='text' name='searchQuery' value={searchQuery} placeholder='Search...'/>
-                {count > 0 && (
-                    <UsersTable
-                        users={userCrop}
-                        onDelete={handleDelete}
-                        onBookMark={handleBookMark}
-                        onSort={handleSort}
-                        selectedSort={sortBy}
-                    />
+                        </button>
+                    </div>
                 )}
-                <div className='d-flex justify-content-center'>
-                    {filteredUsers.length >= pageSize && (<Pagination
-                        itemsCount={count}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                        onPageChange={handlePageChange}
-                    />
+
+                <div className='d-flex flex-column'>
+                    <SearchStatus length={count} />
+                    <input onChange={handleSearchQuery} type='text' name='searchQuery' value={searchQuery} placeholder='Search...'/>
+                    {count > 0 && (
+                        <UsersTable
+                            users={userCrop}
+                            onDelete={handleDelete}
+                            onBookMark={handleBookMark}
+                            onSort={handleSort}
+                            selectedSort={sortBy}
+                        />
                     )}
+                    <div className='d-flex justify-content-center'>
+                        {filteredUsers.length >= pageSize && (<Pagination
+                            itemsCount={count}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={handlePageChange}
+                        />
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
 
-    );
+        );
+    }
+    return 'Loading...';
 };
 
 UsersListPage.propTypes = {

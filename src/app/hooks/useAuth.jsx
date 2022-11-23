@@ -6,7 +6,12 @@ import { toast } from 'react-toastify';
 import localStorageService, { setTokens } from '../services/localStorage.service';
 import { useHistory } from 'react-router-dom';
 
-export const httpAuth = axios.create();
+export const httpAuth = axios.create({
+    baseURL: 'https://identitytoolkit.googleapis.com/v1/',
+    params: {
+        key: process.env.REACT_APP_FIREBASE_KEY
+    }
+});
 const AuthContext = React.createContext();
 
 export const useAuth = () => {
@@ -22,10 +27,9 @@ const AuthProvider = ({ children }) => {
     function randomInt (min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
-    async function sighUp ({ email, password, ...rest }) {
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+    async function signUp ({ email, password, ...rest }) {
         try {
-            const { data } = await httpAuth.post(url, {
+            const { data } = await httpAuth.post('accounts:signInWithPassword', {
                 email,
                 password,
                 returnSecureToken: true
@@ -55,9 +59,8 @@ const AuthProvider = ({ children }) => {
         }
     }
     async function singIn ({ email, password }) {
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
         try {
-            const { data } = await httpAuth.post(url, {
+            const { data } = await httpAuth.post('accounts:signUp', {
                 email,
                 password,
                 returnSecureToken: true
@@ -128,7 +131,7 @@ const AuthProvider = ({ children }) => {
         }
     }, [error]);
     return (
-        <AuthContext.Provider value={{ sighUp, currentUser, updateUserData, singIn, logOut }}>
+        <AuthContext.Provider value={{ signUp, currentUser, updateUserData, singIn, logOut }}>
             {!isLoading ? children : 'Loading...'}
         </AuthContext.Provider>
     );
