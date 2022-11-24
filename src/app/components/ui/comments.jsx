@@ -1,20 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import NewComment from '../common/comments/newComment';
 import CommentList from '../common/comments/commentList';
 import { orderBy } from 'lodash';
-import { UseComments } from '../../hooks/useComments';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    createComment,
+    getComments,
+    getCommentsLoadingStatus,
+    loadCommentsList,
+    removeComment
+} from '../../store/comments';
+import { useParams } from 'react-router-dom';
 
 const Comments = () => {
-    const { createComment, comments, removeComment } = UseComments();
+    const { userId } = useParams();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(loadCommentsList(userId));
+    }, [userId]);
+    const isLoading = useSelector(getCommentsLoadingStatus());
+    const comments = useSelector(getComments());
     const handleSubmit = (data) => {
-        // api.comments.add({ ...data, pageId: userId }).then((data) => setComments([...comments, data]));
-        createComment(data);
+        dispatch(createComment({ ...data, pageId: userId }));
     };
     const handleRemoveComment = (id) => {
-        removeComment(id);
-        // api.comments.remove(id).then((id) => {
-        //     setComments((prevState) => prevState.filter((x) => x._id !== id));
-        // });
+        dispatch(removeComment(id));
     };
     const sortedComments = orderBy(comments, ['created_at'], ['desc']);
     return (
@@ -25,10 +35,13 @@ const Comments = () => {
                     <div className="card-body ">
                         <h2>Comments</h2>
                         <hr />
-                        <CommentList
-                            comment={sortedComments}
-                            onClick ={handleRemoveComment}
-                        />
+                        {!isLoading
+                            ? <CommentList
+                                comment={sortedComments}
+                                onClick ={handleRemoveComment}
+                            />
+                            : 'Loading...'}
+
                     </div>
                 </div>
             )}
