@@ -6,31 +6,27 @@ import NavBar from './components/ui/navBar';
 import Login from './layouts/login';
 import Users from './layouts/users';
 import editUserPage from './components/page/editUserPage';
-import ProfessionProvider from './hooks/useProfession';
 import { ToastContainer } from 'react-toastify';
-import QualitiesProvider from './hooks/useQuality';
-import AuthProvider from './hooks/useAuth';
 import ProtectedRoute from './components/common/protectedRoute';
 import LogOut from './layouts/logOut';
+import AppLoader from './components/ui/hoc/appLoader';
 
 const App = () => {
     return (
         <>
-            <AuthProvider>
+            <AppLoader>
+
                 <NavBar/>
-                <ProfessionProvider>
-                    <QualitiesProvider>
-                        <Switch>
-                            <Route exact path ='/' component={MainPage}/>
-                            <Route path ='/login/:type?' component={Login}/>
-                            <Route path = '/logout' component={LogOut}/>
-                            <ProtectedRoute path='/users/:userId/:edit' exact component={editUserPage}/>
-                            <Route path='/users/:userId?' exact component={Users}/>
-                            <Redirect to='/'/>
-                        </Switch>
-                    </QualitiesProvider>
-                </ProfessionProvider>
-            </AuthProvider>
+                <Switch>
+                    <Route exact path ='/' component={MainPage}/>
+                    <Route path ='/login/:type?' component={Login}/>
+                    <Route path = '/logout' component={LogOut}/>
+                    <ProtectedRoute path='/users/:userId/:edit' exact component={editUserPage}/>
+                    <Route path='/users/:userId?' exact component={Users}/>
+                    <Redirect to='/'/>
+                </Switch>
+
+            </AppLoader>
             <ToastContainer/>
         </>
     );

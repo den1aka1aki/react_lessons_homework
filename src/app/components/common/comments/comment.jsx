@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AvatarLoader from '../../../utils/avatarLoader';
 import { displayDate } from '../../../utils/displayDate';
-import { useUser } from '../../../hooks/useUsers';
-import { useAuth } from '../../../hooks/useAuth';
+import { useSelector } from 'react-redux';
+import { getCurrentUserId, getUserById } from '../../../store/users';
 
 const Comment = ({ _id, userId, content, created_at: created, onClick }) => {
-    const { getUserById } = useUser();
-    const user = getUserById(userId);
-    const { currentUser } = useAuth();
+    const user = useSelector(getUserById(userId));
+    const currentUserId = useSelector(getCurrentUserId());
     return (
         <div className='bg-light card-body mb-3'>
             <div className='row'>
@@ -26,7 +25,7 @@ const Comment = ({ _id, userId, content, created_at: created, onClick }) => {
                                         <span className='small'> - {displayDate(created)}
                                         </span>
                                     </p>
-                                    {currentUser._id === userId &&
+                                    {currentUserId === userId &&
                                         <button
                                             className=' btn btn-sm text-primary d-flex align-items-center '
                                             onClick={() => onClick(_id)}
